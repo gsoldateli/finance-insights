@@ -17,7 +17,7 @@ const CoindeskNewsSchema = z.object({
 
 export const NewsService = {
     async getLatestNews() {
-        const apiKey = process.env.CRYPTOCOMPARE_API_KEY;
+        const apiKey = process.env.COINDESK_API_KEY;
         // Endpoint de notícias filtrado por categorias (BTC, ETH, etc)
         const url = `https://data-api.coindesk.com/news/v1/article/list?lang=EN&limit=3&api_key=${apiKey}`;
 
