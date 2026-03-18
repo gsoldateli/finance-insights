@@ -1,0 +1,35 @@
+# News Object
+type News {
+  id: ID!
+  title: String!
+  summary: String
+  url: String!
+  source: String!
+  publishedAt: String
+}
+
+# Crypto Object
+type Crypto {
+  id: ID!
+  symbol: String!
+  price: Float!
+  change24h: Float
+}
+
+# Weather Object
+type Weather {
+  temp: Int!
+  condition: String!
+  city: String!
+}
+
+type Query {
+  # Returns a list of news, allowing to filter by category
+  getNews(category: String): [News]!
+
+  # Returns a list of cryptos with an optional limit
+  getCryptos(limit: Int): [Crypto]!
+
+  # Returns the weather of a specific city
+  getWeather(city: String!): Weather
+}

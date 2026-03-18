@@ -19,6 +19,7 @@
   "packageManager": "npm@11.9.0",
   "workspaces": [
     "apps/*",
+    "bff/*",
     "packages/*"
   ]
 }
