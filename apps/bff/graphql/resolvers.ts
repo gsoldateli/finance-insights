@@ -1,3 +1,5 @@
+import { withCache } from "../lib/cache";
+import { NewsService } from "../src/services/news.service";
 import { QueryResolvers, Resolvers } from "./generated/resolvers-types";
 
 
@@ -11,8 +13,8 @@ export const queryResolvers: QueryResolvers = {
             change24h: 10,
         }];
     },
-    getNews: async (_, { category }) => {
-        return [];
+    getNews: async () => {
+        return withCache('latest-news', () => NewsService.getLatestNews());
     },
     getWeather: async (_, { city }) => {
         return null;

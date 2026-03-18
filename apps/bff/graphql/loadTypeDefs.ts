@@ -9,7 +9,7 @@ import { parse } from 'graphql';
  */
 export function loadTypeDefs() {
     try {
-        // Absolute path to the shared package in the Monorepo
+        // Absolute path to the schema
         const schemaPath = join(process.cwd(), './graphql/schema.graphql');
 
         const schemaString = readFileSync(schemaPath, 'utf8');
