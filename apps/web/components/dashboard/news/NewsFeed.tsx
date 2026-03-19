@@ -28,7 +28,7 @@ const NewsFeed = async () => {
                             <h3 className="text-2xl font-bold leading-tight hover:text-[#144bb8] transition-colors">
                                 {primaryNews?.title}
                             </h3>
-                            <p className="text-slate-500 leading-relaxed">
+                            <p className="text-slate-500 leading-relaxed line-clamp-3">
                                 {primaryNews?.summary}
                             </p>
                         </CardContent>
