@@ -13,6 +13,10 @@
       "outputs": [
         ".next/**",
         "!.next/cache/**"
+      ],
+      "env": [
+        "NEXT_PUBLIC_GRAPHQL_URL",
+        "PORT"
       ]
     },
     "lint": {
