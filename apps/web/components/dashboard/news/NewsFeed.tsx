@@ -1,14 +1,15 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatDistanceToNow } from "date-fns";
-import request from "graphql-request";
+
 import Link from "next/link";
 import { GET_NEWS_QUERY } from "./news.gql";
+import { api } from "@/lib/api-client";
 
 
 
 const NewsFeed = async () => {
-    const data = await request('http://localhost:4000/graphql/', GET_NEWS_QUERY);
+    const data = await api.request(GET_NEWS_QUERY);
 
     const [primaryNews, ...secondaryNews] = data.getNews;
 
