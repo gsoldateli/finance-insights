@@ -1,23 +1,10 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { graphql } from "@/src/gql";
 import { formatDistanceToNow } from "date-fns";
 import request from "graphql-request";
 import Link from "next/link";
+import { GET_NEWS_QUERY } from "./news.gql";
 
-const GET_NEWS_QUERY = graphql(`
-  query GetNews {
-    getNews {
-      id
-      title
-      summary
-      url
-      publishedAt
-      source
-      imageUrl
-    }
-  }
-`);
 
 
 const NewsFeed = async () => {
