@@ -1,3 +1,5 @@
+scalar DateTime
+
 # News Object
 type News {
   id: ID!
@@ -5,7 +7,8 @@ type News {
   summary: String
   url: String!
   source: String!
-  publishedAt: String
+  publishedAt: DateTime!
+  imageUrl: String
 }
 
 # Crypto Object

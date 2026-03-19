@@ -4,10 +4,10 @@ import { expressMiddleware } from '@as-integrations/express5';
 import cors from 'cors';
 
 import { loadTypeDefs } from './graphql/loadTypeDefs.ts';
-import { queryResolvers } from './graphql/resolvers.ts';
+import { resolvers } from './graphql/resolvers.ts';
 
 const app = express();
-const server = new ApolloServer({ typeDefs: loadTypeDefs(), resolvers: { Query: queryResolvers } });
+const server = new ApolloServer({ typeDefs: loadTypeDefs(), resolvers });
 
 await server.start();
 

@@ -1,4 +1,4 @@
-import { GraphQLResolveInfo } from 'graphql';
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -14,6 +14,7 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  DateTime: { input: any; output: any; }
 };
 
 export type Crypto = {
@@ -27,7 +28,8 @@ export type Crypto = {
 export type News = {
   __typename?: 'News';
   id: Scalars['ID']['output'];
-  publishedAt: Maybe<Scalars['String']['output']>;
+  imageUrl: Maybe<Scalars['String']['output']>;
+  publishedAt: Scalars['DateTime']['output'];
   source: Scalars['String']['output'];
   summary: Maybe<Scalars['String']['output']>;
   title: Scalars['String']['output'];
@@ -63,8 +65,7 @@ export type Weather = {
   temp: Scalars['Int']['output'];
 };
 
-export type WithIndex<TObject> = TObject & Record<string, any>;
-export type ResolversObject<TObject> = WithIndex<TObject>;
+
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
 
@@ -136,9 +137,10 @@ export type DirectiveResolverFn<TResult = Record<PropertyKey, never>, TParent = 
 
 
 /** Mapping between all available schema types and the resolvers types */
-export type ResolversTypes = ResolversObject<{
+export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   Crypto: ResolverTypeWrapper<Crypto>;
+  DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
@@ -146,12 +148,13 @@ export type ResolversTypes = ResolversObject<{
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   Weather: ResolverTypeWrapper<Weather>;
-}>;
+};
 
 /** Mapping between all available schema types and the resolvers parents */
-export type ResolversParentTypes = ResolversObject<{
+export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
   Crypto: Crypto;
+  DateTime: Scalars['DateTime']['output'];
   Float: Scalars['Float']['output'];
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
@@ -159,40 +162,46 @@ export type ResolversParentTypes = ResolversObject<{
   Query: Record<PropertyKey, never>;
   String: Scalars['String']['output'];
   Weather: Weather;
-}>;
+};
 
-export type CryptoResolvers<ContextType = any, ParentType extends ResolversParentTypes['Crypto'] = ResolversParentTypes['Crypto']> = ResolversObject<{
+export type CryptoResolvers<ContextType = any, ParentType extends ResolversParentTypes['Crypto'] = ResolversParentTypes['Crypto']> = {
   change24h: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   price: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   symbol: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-}>;
+};
 
-export type NewsResolvers<ContextType = any, ParentType extends ResolversParentTypes['News'] = ResolversParentTypes['News']> = ResolversObject<{
+export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
+  name: 'DateTime';
+}
+
+export type NewsResolvers<ContextType = any, ParentType extends ResolversParentTypes['News'] = ResolversParentTypes['News']> = {
   id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  publishedAt: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  imageUrl: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  publishedAt: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   source: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   summary: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   title: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   url: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-}>;
+};
 
-export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
+export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   getCryptos: Resolver<Array<Maybe<ResolversTypes['Crypto']>>, ParentType, ContextType, QueryGetCryptosArgs>;
   getNews: Resolver<Array<Maybe<ResolversTypes['News']>>, ParentType, ContextType, QueryGetNewsArgs>;
   getWeather: Resolver<Maybe<ResolversTypes['Weather']>, ParentType, ContextType, RequireFields<QueryGetWeatherArgs, 'city'>>;
-}>;
+};
 
-export type WeatherResolvers<ContextType = any, ParentType extends ResolversParentTypes['Weather'] = ResolversParentTypes['Weather']> = ResolversObject<{
+export type WeatherResolvers<ContextType = any, ParentType extends ResolversParentTypes['Weather'] = ResolversParentTypes['Weather']> = {
   city: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   condition: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   temp: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-}>;
+};
 
-export type Resolvers<ContextType = any> = ResolversObject<{
+export type Resolvers<ContextType = any> = {
   Crypto: CryptoResolvers<ContextType>;
+  DateTime: GraphQLScalarType;
   News: NewsResolvers<ContextType>;
   Query: QueryResolvers<ContextType>;
   Weather: WeatherResolvers<ContextType>;
-}>;
+};
 

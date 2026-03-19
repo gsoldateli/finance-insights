@@ -7,6 +7,7 @@ const CoindeskNewsSchema = z.object({
         TITLE: z.string(),
         BODY: z.string(),
         URL: z.string(),
+        IMAGE_URL: z.string(),
         SOURCE_DATA: z.object({
             NAME: z.string()
         }),
@@ -17,33 +18,32 @@ const CoindeskNewsSchema = z.object({
 
 export const NewsService = {
     async getLatestNews() {
+        console.log('GETCH')
         const apiKey = process.env.COINDESK_API_KEY;
-        // Endpoint de notícias filtrado por categorias (BTC, ETH, etc)
         const url = `https://data-api.coindesk.com/news/v1/article/list?lang=EN&limit=3&api_key=${apiKey}`;
 
         try {
             const response = await fetch(url);
             const json = await response.json();
             const parsed = CoindeskNewsSchema.safeParse(json);
-
+            console.log(JSON.stringify(parsed, null, 2));
             if (parsed.error) {
                 throw new Error(parsed.error.message);
             }
 
-            console.log(JSON.stringify(json, null, 2));
-
-            // Mapeando o 'Data' da CryptoCompare para o nosso tipo 'News' do GraphQL
             return parsed.data.Data.map((item) => ({
                 id: `${item.ID}`,
                 title: item.TITLE,
-                summary: item.BODY, // Trim para o card do front
+                summary: item.BODY,
                 url: item.URL,
                 source: item.SOURCE_DATA.NAME,
+                imageUrl: item.IMAGE_URL,
                 publishedAt: new Date(item.PUBLISHED_ON * 1000).toISOString(),
             }));
+
         } catch (error) {
             console.error('[NewsService Error]:', error);
-            return []; // Retorno resiliente: o app não quebra se a API falhar
+            return [];
         }
     }
 };
