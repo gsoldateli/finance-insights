@@ -18,7 +18,7 @@ const NewsFeed = async () => {
             {/* Main News Card */}
             {primaryNews ? (
                 <Link href={primaryNews?.url ?? ''} className='block'>
-                    <Card className="overflow-hidden border-none shadow-md hover:shadow-lg transition-shadow">
+                    <Card as="article" className="overflow-hidden border-none shadow-md hover:shadow-lg transition-shadow">
                         <img src={primaryNews?.imageUrl ?? ''} alt={primaryNews?.title} className="w-full h-80 object-cover" />
                         <CardContent className="p-6 space-y-4">
                             <div className="flex items-center gap-3">
@@ -61,12 +61,12 @@ const NewsFeed = async () => {
 }
 
 const SecondaryNewsCard = ({ category, title, img, publishedAt }: { category: string, title: string, img: string, publishedAt: string }) => (
-    <Card className="overflow-hidden hover:shadow-md transition-all cursor-pointer group">
-        <div className={`h-48 bg-cover bg-center transition-transform group-hover:scale-105`} style={{ backgroundImage: `url(${img})` }} />
+    <Card as="article" className="overflow-hidden hover:shadow-md transition-all cursor-pointer group">
+        <img src={img ?? ''} alt={title} className="w-full h-48 object-cover" />
         <CardContent className="p-5 space-y-2">
             <div className="flex items-center gap-2">
                 <Badge variant="secondary" className="text-[10px] uppercase">{category}</Badge>
-                <span className="text-[10px] text-slate-400">{formatDistanceToNow(publishedAt, { addSuffix: true })}</span>
+                <time dateTime={publishedAt} className="text-[10px] text-slate-400">{formatDistanceToNow(publishedAt, { addSuffix: true })}</time>
             </div>
             <h3 className="font-bold leading-snug group-hover:text-[#144bb8] transition-colors line-clamp-2">
                 {title}

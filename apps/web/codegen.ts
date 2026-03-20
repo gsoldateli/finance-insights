@@ -14,7 +14,8 @@ const config: CodegenConfig = {
           DateTime: 'string',
         },
       },
-      plugins: []
+
+      plugins: ['typescript-msw']
     }
   }
 };

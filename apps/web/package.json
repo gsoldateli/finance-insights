@@ -4,6 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "test": "vitest",
     "dev": "next dev --port 3000",
     "build": "next build",
     "start": "next start",
@@ -30,13 +31,27 @@
   "devDependencies": {
     "@graphql-codegen/cli": "6.2.1",
     "@graphql-codegen/client-preset": "5.2.4",
+    "@graphql-codegen/typescript-msw": "^4.0.0",
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/node": "^22.15.3",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",
+    "@vitejs/plugin-react": "^6.0.1",
     "eslint": "^9.39.1",
+    "jsdom": "^29.0.1",
+    "msw": "^2.12.13",
     "tailwindcss": "^4.2.1",
-    "typescript": "5.9.2"
+    "typescript": "5.9.2",
+    "vite-tsconfig-paths": "^6.1.1",
+    "vitest": "^4.1.0"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }
