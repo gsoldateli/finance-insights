@@ -2,13 +2,15 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
-function Card({
+function Card<T extends React.ElementType = "div">({
   className,
   size = "default",
+  as,
   ...props
-}: React.ComponentProps<"div"> & { size?: "default" | "sm" }) {
+}: React.ComponentProps<T> & { size?: "default" | "sm", as?: T }) {
+  const Component = as || "div"
   return (
-    <div
+    <Component
       data-slot="card"
       data-size={size}
       className={cn(

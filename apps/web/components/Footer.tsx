@@ -18,7 +18,7 @@ export function Footer() {
                             <span>Finance Insights</span>
                         </Link>
                         <p className="text-sm text-muted-foreground leading-relaxed">
-                            Elevando o padrão da análise financeira com dados em tempo real e tecnologia de ponta.
+                            Empowering financial analysis with reliable data and modern technology.
                         </p>
                         <div className="flex gap-2">
                             <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -63,7 +63,7 @@ export function Footer() {
                             <span className="group-hover:text-[#144bb8]">contato@financeinsights.com</span>
                         </div>
                         <p className="text-xs text-muted-foreground mt-2">
-                            Assine nossa newsletter para relatórios semanais exclusivos.
+                            Subscribe to our newsletter for exclusive daily reports.
                         </p>
                     </div>
                 </div>
@@ -71,7 +71,7 @@ export function Footer() {
                 <Separator className="my-8" />
 
                 <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
-                    <p>© {currentYear} Finance Insights — Projeto demonstrativo High Performance.</p>
+                    <p>© {currentYear} Finance Insights.</p>
                     <div className="flex gap-6">
                         <Link href="#" className="hover:underline">Privacidade</Link>
                         <Link href="#" className="hover:underline">Termos de Uso</Link>
