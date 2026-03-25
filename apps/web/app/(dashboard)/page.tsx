@@ -2,8 +2,8 @@ export const dynamic = 'force-dynamic';
 
 import React, { Suspense } from 'react';
 import {
-    Search, TrendingUp, Newspaper, CloudSun,
-    MapPin, Mail, ChevronRight
+    Search, TrendingUp, Newspaper,
+    Mail, ChevronRight
 } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,8 @@ import { Badge } from "@/components/ui/badge";
 
 import NewsFeed from '@/components/dashboard/news/NewsFeed';
 import NewsLoadingSkeleton from '@/components/dashboard/news/NewsLoadingSkeleton';
+import { WeatherInfo } from '@/components/dashboard/weather/WeatherInfo';
+import { WeatherInfoSkeleton } from '@/components/dashboard/weather/WeatherInfoSkeleton';
 
 
 
@@ -49,27 +51,9 @@ const FinanceDashboard = async () => {
 
                     {/* Coluna da Direita: Sidebar */}
                     <aside className="space-y-6">
-                        {/* Weather Card */}
-                        <Card>
-                            <CardContent className="p-6">
-                                <div className="flex justify-between items-start mb-4">
-                                    <div className="p-3 bg-blue-50 rounded-lg text-blue-500">
-                                        <CloudSun className="h-8 w-8" />
-                                    </div>
-                                    <div className="text-right">
-                                        <p className="text-xs text-slate-500">San Francisco, CA</p>
-                                        <Button variant="link" size="sm" className="h-auto p-0 text-[10px]">
-                                            <MapPin className="h-3 w-3 mr-1" /> Change
-                                        </Button>
-                                    </div>
-                                </div>
-                                <p className="text-xs font-bold uppercase text-slate-400 tracking-wider">Weather</p>
-                                <div className="flex items-baseline gap-2">
-                                    <span className="text-3xl font-bold">22°C</span>
-                                    <span className="text-sm text-slate-500">Cloudy</span>
-                                </div>
-                            </CardContent>
-                        </Card>
+                        <Suspense fallback={<WeatherInfoSkeleton />}>
+                            <WeatherInfo />
+                        </Suspense>
 
                         {/* Trending Coins */}
                         <div className="space-y-4">

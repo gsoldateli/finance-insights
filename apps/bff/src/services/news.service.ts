@@ -18,7 +18,7 @@ const CoindeskNewsSchema = z.object({
 
 export const NewsService = {
     async getLatestNews() {
-        console.log('GETCH')
+
         const apiKey = process.env.COINDESK_API_KEY;
         const url = `https://data-api.coindesk.com/news/v1/article/list?lang=EN&limit=3&api_key=${apiKey}`;
 
@@ -26,7 +26,7 @@ export const NewsService = {
             const response = await fetch(url);
             const json = await response.json();
             const parsed = CoindeskNewsSchema.safeParse(json);
-            console.log(JSON.stringify(parsed, null, 2));
+
             if (parsed.error) {
                 throw new Error(parsed.error.message);
             }
