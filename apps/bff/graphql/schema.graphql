@@ -25,8 +25,13 @@ type Location {
   country: String!
 }
 
+type Temperature {
+  celsius: Int!
+  fahrenheit: Int!
+}
+
 type Weather {
-  temp: Int!
+  temperature: Temperature!
   condition: String!
   location: Location!
 }

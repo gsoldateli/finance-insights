@@ -5,6 +5,7 @@ import { GET_WEATHER_QUERY } from "./weather.gql"
 import { api } from "@/lib/api-client"
 import { headers } from "next/headers"
 import { WeatherError } from "./WeatherError"
+import { TemperatureDisplay } from "./TemperatureDisplay"
 
 const getWeatherIcon = (condition: string) => {
     const lowerCondition = condition.toLowerCase();
@@ -16,13 +17,13 @@ const getWeatherIcon = (condition: string) => {
 }
 
 export const WeatherInfo = async () => {
-    // await new Promise((resolve) => setTimeout(resolve, 5000));
+
     const headersList = await headers();
     const forwardedFor = headersList.get("x-forwarded-for");
     const realIp = headersList.get("x-real-ip");
     let ip = forwardedFor ? (forwardedFor.split(",")[0]?.trim() ?? "127.0.0.1") : realIp || "127.0.0.1";
     ip = process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_DEBUG_IP ? process.env.NEXT_PUBLIC_DEBUG_IP : ip;
-
+    console.log({ forwardedFor, realIp })
     let weather;
     try {
         const data = await api.request(GET_WEATHER_QUERY, { ip });
@@ -35,7 +36,7 @@ export const WeatherInfo = async () => {
         return <WeatherError />;
     }
 
-    const { temp, condition, location } = weather;
+    const { temperature, condition, location } = weather;
 
     return (
         <Card>
@@ -45,7 +46,7 @@ export const WeatherInfo = async () => {
                         {getWeatherIcon(condition)}
                     </div>
                     <div className="text-right flex flex-col items-end">
-                        <p className="text-xs text-slate-500 max-w-[120px] truncate" title={`${location.city}, ${location.state}`}>
+                        <p className="text-xs text-slate-500 max-w-[120px]" title={`${location.city}, ${location.state}`}>
                             {location.city}, {location.state}
                         </p>
                         <Button variant="link" size="sm" className="h-auto p-0 text-[10px] mt-1">
@@ -54,10 +55,11 @@ export const WeatherInfo = async () => {
                     </div>
                 </div>
                 <p className="text-xs font-bold uppercase text-slate-400 tracking-wider">Weather</p>
-                <div className="flex items-baseline gap-2">
-                    <span className="text-3xl font-bold">{temp}°C</span>
-                    <span className="text-sm text-slate-500">{condition}</span>
-                </div>
+                <TemperatureDisplay
+                    fahrenheit={temperature.fahrenheit}
+                    celsius={temperature.celsius}
+                    condition={condition}
+                />
             </CardContent>
         </Card>
     );

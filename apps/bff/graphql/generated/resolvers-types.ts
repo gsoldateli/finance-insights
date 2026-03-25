@@ -65,11 +65,17 @@ export type QueryGetWeatherArgs = {
   ip: InputMaybe<Scalars['String']['input']>;
 };
 
+export type Temperature = {
+  __typename?: 'Temperature';
+  celsius: Scalars['Int']['output'];
+  fahrenheit: Scalars['Int']['output'];
+};
+
 export type Weather = {
   __typename?: 'Weather';
   condition: Scalars['String']['output'];
   location: Location;
-  temp: Scalars['Int']['output'];
+  temperature: Temperature;
 };
 
 
@@ -155,6 +161,7 @@ export type ResolversTypes = {
   News: ResolverTypeWrapper<News>;
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
+  Temperature: ResolverTypeWrapper<Temperature>;
   Weather: ResolverTypeWrapper<Weather>;
 };
 
@@ -170,6 +177,7 @@ export type ResolversParentTypes = {
   News: News;
   Query: Record<PropertyKey, never>;
   String: Scalars['String']['output'];
+  Temperature: Temperature;
   Weather: Weather;
 };
 
@@ -206,10 +214,15 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   getWeather: Resolver<Maybe<ResolversTypes['Weather']>, ParentType, ContextType, QueryGetWeatherArgs>;
 };
 
+export type TemperatureResolvers<ContextType = any, ParentType extends ResolversParentTypes['Temperature'] = ResolversParentTypes['Temperature']> = {
+  celsius: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  fahrenheit: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+};
+
 export type WeatherResolvers<ContextType = any, ParentType extends ResolversParentTypes['Weather'] = ResolversParentTypes['Weather']> = {
   condition: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   location: Resolver<ResolversTypes['Location'], ParentType, ContextType>;
-  temp: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  temperature: Resolver<ResolversTypes['Temperature'], ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = any> = {
@@ -218,6 +231,7 @@ export type Resolvers<ContextType = any> = {
   Location: LocationResolvers<ContextType>;
   News: NewsResolvers<ContextType>;
   Query: QueryResolvers<ContextType>;
+  Temperature: TemperatureResolvers<ContextType>;
   Weather: WeatherResolvers<ContextType>;
 };
 

@@ -3,7 +3,10 @@ import { graphql } from "@/src/gql";
 export const GET_WEATHER_QUERY = graphql(`
   query GetWeather($ip: String) {
     getWeather(ip: $ip) {
-      temp
+      temperature {
+        celsius
+        fahrenheit
+      }
       condition
       location {
         city
