@@ -6,6 +6,7 @@ import { api } from "@/lib/api-client"
 import { headers } from "next/headers"
 import { WeatherError } from "./WeatherError"
 import { TemperatureDisplay } from "./TemperatureDisplay"
+import { WeatherLocationAction } from "./WeatherLocationAction"
 
 const getWeatherIcon = (condition: string) => {
     const lowerCondition = condition.toLowerCase();
@@ -46,12 +47,7 @@ export const WeatherInfo = async () => {
                         {getWeatherIcon(condition)}
                     </div>
                     <div className="text-right flex flex-col items-end">
-                        <p className="text-xs text-slate-500 max-w-[120px]" title={`${location.city}, ${location.state}`}>
-                            {location.city}, {location.state}
-                        </p>
-                        <Button variant="link" size="sm" className="h-auto p-0 text-[10px] mt-1">
-                            <MapPin className="h-3 w-3 mr-1" /> Change
-                        </Button>
+                        <WeatherLocationAction city={location.city} state={location.state} country={location.country} />
                     </div>
                 </div>
                 <p className="text-xs font-bold uppercase text-slate-400 tracking-wider">Weather</p>
