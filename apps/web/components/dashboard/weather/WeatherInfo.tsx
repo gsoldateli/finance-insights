@@ -19,12 +19,20 @@ const getWeatherIcon = (condition: string) => {
 
 export const WeatherInfo = async () => {
 
+    //TODO: Record location
+    // [x] - Use weather API to get location based on user's IP or location
+    // [x] - Cache location for 30 minutes
+    // [] - When selecting location, update weather widget with new latitude/longitude.
+    // [] - Add powered by Open Weather
+    // [] - Create branch to populate cryptocurrencies.
+
+
     const headersList = await headers();
     const forwardedFor = headersList.get("x-forwarded-for");
     const realIp = headersList.get("x-real-ip");
     let ip = forwardedFor ? (forwardedFor.split(",")[0]?.trim() ?? "127.0.0.1") : realIp || "127.0.0.1";
     ip = process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_DEBUG_IP ? process.env.NEXT_PUBLIC_DEBUG_IP : ip;
-    console.log({ forwardedFor, realIp })
+
     let weather;
     try {
         const data = await api.request(GET_WEATHER_QUERY, { ip });
@@ -47,7 +55,7 @@ export const WeatherInfo = async () => {
                         {getWeatherIcon(condition)}
                     </div>
                     <div className="text-right flex flex-col items-end">
-                        <WeatherLocationAction city={location.city} state={location.state} country={location.country} />
+                        <WeatherLocationAction city={location.city} state={location.state} />
                     </div>
                 </div>
                 <p className="text-xs font-bold uppercase text-slate-400 tracking-wider">Weather</p>

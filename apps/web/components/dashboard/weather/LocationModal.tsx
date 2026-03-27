@@ -64,6 +64,8 @@ export function LocationModal({ onSelect, isOpen, onClose }: LocationModalProps)
         )
     }
 
+    const cities = results?.filter((item: any) => item.properties.type === 'city') ?? [];
+    console.log({ cities })
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-[480px] p-0 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-xl shadow-2xl overflow-hidden gap-0">
@@ -105,7 +107,7 @@ export function LocationModal({ onSelect, isOpen, onClose }: LocationModalProps)
                         </CommandEmpty>
 
                         <CommandGroup heading="Sugestões">
-                            {results?.map((item, index) => (
+                            {cities?.map((item, index) => (
                                 <CommandItem
                                     key={`${item.properties.osm_id}-${index}`}
                                     onSelect={() => {
@@ -120,8 +122,7 @@ export function LocationModal({ onSelect, isOpen, onClose }: LocationModalProps)
                                             {item.properties.name}
                                         </span>
                                         <span className="text-xs text-slate-500">
-                                            {item.properties.state || item.properties.country}
-                                            {item.properties.country && `, ${item.properties.country}`}
+                                            {`${item.properties.name},${item.properties.county}, ${item.properties.state}, ${item.properties.country}`}
                                         </span>
                                     </div>
                                 </CommandItem>
