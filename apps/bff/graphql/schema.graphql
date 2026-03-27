@@ -36,6 +36,21 @@ type Weather {
   location: Location!
 }
 
+type GeoCoordinates {
+  lat: Float!
+  lng: Float!
+}
+
+type LocationResult {
+  id: ID!
+  name: String!
+  type: String!
+  city: String
+  state: String!
+  country: String!
+  coordinates: GeoCoordinates!
+}
+
 type Query {
   # Returns a list of news, allowing to filter by category
   getNews(category: String): [News]!
@@ -45,4 +60,6 @@ type Query {
 
   # Returns the weather of a specific city
   getWeather(ip: String, city: String): Weather
+
+  searchLocations(query: String!): [LocationResult]!
 }

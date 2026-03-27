@@ -38,6 +38,7 @@ export function LocationModal({ onSelect, isOpen, onClose }: LocationModalProps)
         const fetchCities = async () => {
             setLoading(true)
             try {
+                // TODO: Make it come from BFF Graphql
                 const response = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(debouncedQuery ?? '')}`);
                 const data = await response.json();
                 setResults(data.features)
@@ -47,8 +48,9 @@ export function LocationModal({ onSelect, isOpen, onClose }: LocationModalProps)
                 setLoading(false)
             }
         }
-
-        fetchCities()
+        if (isOpen && debouncedQuery) {
+            fetchCities()
+        }
     }, [debouncedQuery])
 
     const handleGeolocation = () => {
@@ -111,6 +113,8 @@ export function LocationModal({ onSelect, isOpen, onClose }: LocationModalProps)
                                 <CommandItem
                                     key={`${item.properties.osm_id}-${index}`}
                                     onSelect={() => {
+                                        console.log('item', item)
+
                                         onSelect(item.properties)
                                         onClose()
                                     }}

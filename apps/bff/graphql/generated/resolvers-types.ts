@@ -6,6 +6,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -24,11 +25,27 @@ export type Crypto = {
   symbol: Scalars['String']['output'];
 };
 
+export type GeoCoordinates = {
+  __typename?: 'GeoCoordinates';
+  lat: Scalars['Float']['output'];
+  lng: Scalars['Float']['output'];
+};
+
 export type Location = {
   __typename?: 'Location';
   city: Scalars['String']['output'];
   country: Scalars['String']['output'];
   state: Scalars['String']['output'];
+};
+
+export type LocationResult = {
+  __typename?: 'LocationResult';
+  city: Maybe<Scalars['String']['output']>;
+  coordinates: GeoCoordinates;
+  country: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  state: Scalars['String']['output'];
+  type: Scalars['String']['output'];
 };
 
 export type News = {
@@ -47,6 +64,7 @@ export type Query = {
   getCryptos: Array<Maybe<Crypto>>;
   getNews: Array<Maybe<News>>;
   getWeather: Maybe<Weather>;
+  searchLocations: Array<Maybe<LocationResult>>;
 };
 
 
@@ -63,6 +81,11 @@ export type QueryGetNewsArgs = {
 export type QueryGetWeatherArgs = {
   city: InputMaybe<Scalars['String']['input']>;
   ip: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QuerySearchLocationsArgs = {
+  query: Scalars['String']['input'];
 };
 
 export type Temperature = {
@@ -155,9 +178,11 @@ export type ResolversTypes = {
   Crypto: ResolverTypeWrapper<Crypto>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
+  GeoCoordinates: ResolverTypeWrapper<GeoCoordinates>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Location: ResolverTypeWrapper<Location>;
+  LocationResult: ResolverTypeWrapper<LocationResult>;
   News: ResolverTypeWrapper<News>;
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
@@ -171,9 +196,11 @@ export type ResolversParentTypes = {
   Crypto: Crypto;
   DateTime: Scalars['DateTime']['output'];
   Float: Scalars['Float']['output'];
+  GeoCoordinates: GeoCoordinates;
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
   Location: Location;
+  LocationResult: LocationResult;
   News: News;
   Query: Record<PropertyKey, never>;
   String: Scalars['String']['output'];
@@ -192,10 +219,24 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
   name: 'DateTime';
 }
 
+export type GeoCoordinatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['GeoCoordinates'] = ResolversParentTypes['GeoCoordinates']> = {
+  lat: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  lng: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+};
+
 export type LocationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Location'] = ResolversParentTypes['Location']> = {
   city: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   country: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   state: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+};
+
+export type LocationResultResolvers<ContextType = any, ParentType extends ResolversParentTypes['LocationResult'] = ResolversParentTypes['LocationResult']> = {
+  city: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  coordinates: Resolver<ResolversTypes['GeoCoordinates'], ParentType, ContextType>;
+  country: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  name: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  state: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  type: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 };
 
 export type NewsResolvers<ContextType = any, ParentType extends ResolversParentTypes['News'] = ResolversParentTypes['News']> = {
@@ -212,6 +253,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   getCryptos: Resolver<Array<Maybe<ResolversTypes['Crypto']>>, ParentType, ContextType, QueryGetCryptosArgs>;
   getNews: Resolver<Array<Maybe<ResolversTypes['News']>>, ParentType, ContextType, QueryGetNewsArgs>;
   getWeather: Resolver<Maybe<ResolversTypes['Weather']>, ParentType, ContextType, QueryGetWeatherArgs>;
+  searchLocations: Resolver<Array<Maybe<ResolversTypes['LocationResult']>>, ParentType, ContextType, RequireFields<QuerySearchLocationsArgs, 'query'>>;
 };
 
 export type TemperatureResolvers<ContextType = any, ParentType extends ResolversParentTypes['Temperature'] = ResolversParentTypes['Temperature']> = {
@@ -228,7 +270,9 @@ export type WeatherResolvers<ContextType = any, ParentType extends ResolversPare
 export type Resolvers<ContextType = any> = {
   Crypto: CryptoResolvers<ContextType>;
   DateTime: GraphQLScalarType;
+  GeoCoordinates: GeoCoordinatesResolvers<ContextType>;
   Location: LocationResolvers<ContextType>;
+  LocationResult: LocationResultResolvers<ContextType>;
   News: NewsResolvers<ContextType>;
   Query: QueryResolvers<ContextType>;
   Temperature: TemperatureResolvers<ContextType>;
