@@ -18,8 +18,6 @@ const LocationResponseSchema = z.object({
     }).array(),
 });
 
-type LocationResponse = z.infer<typeof LocationResponseSchema>;
-
 
 export class LocationService {
 

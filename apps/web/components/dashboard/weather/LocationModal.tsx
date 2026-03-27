@@ -12,6 +12,9 @@ import {
 import useDebounce from "@/hooks/useDebounce"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { cn } from "@/lib/utils"
+import { useQuery } from "@tanstack/react-query"
+import { api } from "@/lib/api-client"
+import { SEARCH_LOCATIONS_QUERY } from "./weather.gql"
 
 interface LocationModalProps {
     isOpen: boolean
@@ -21,37 +24,23 @@ interface LocationModalProps {
 
 export function LocationModal({ onSelect, isOpen, onClose }: LocationModalProps) {
     const [query, setQuery] = useState<string>("")
-    const [results, setResults] = useState<any[]>([])
-    const [loading, setLoading] = useState(false)
     const [isLocating, setIsLocating] = useState(false)
 
     const debouncedQuery = useDebounce(query, 400);
 
 
-    useEffect(() => {
 
-        if (debouncedQuery && debouncedQuery.length < 3) {
-            setResults([])
-            return
-        }
-
-        const fetchCities = async () => {
-            setLoading(true)
-            try {
-                // TODO: Make it come from BFF Graphql
-                const response = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(debouncedQuery ?? '')}`);
-                const data = await response.json();
-                setResults(data.features)
-            } catch (error) {
-                console.error("Erro na busca:", error)
-            } finally {
-                setLoading(false)
+    const { data, isLoading, error } = useQuery({
+        queryKey: ['search-locations', debouncedQuery],
+        queryFn: async () => {
+            if (debouncedQuery.length < 3) {
+                return null
             }
+            return await api.request(SEARCH_LOCATIONS_QUERY, { query: debouncedQuery })
         }
-        if (isOpen && debouncedQuery) {
-            fetchCities()
-        }
-    }, [debouncedQuery])
+    })
+    const locations = data?.searchLocations ?? [];
+
 
     const handleGeolocation = () => {
         setIsLocating(true)
@@ -66,8 +55,6 @@ export function LocationModal({ onSelect, isOpen, onClose }: LocationModalProps)
         )
     }
 
-    const cities = results?.filter((item: any) => item.properties.type === 'city') ?? [];
-    console.log({ cities })
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-[480px] p-0 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-xl shadow-2xl overflow-hidden gap-0">
@@ -98,24 +85,27 @@ export function LocationModal({ onSelect, isOpen, onClose }: LocationModalProps)
                             value={query}
                             onValueChange={setQuery}
                             className="h-14 border-none focus:ring-0 bg-transparent"
-                            prefixIcon={loading ? <Loader2 className="h-4 w-4 animate-spin opacity-50" /> : <MapPin className="h-4 w-4 text-slate-400" />}
+                            prefixIcon={isLoading ? <Loader2 className="h-4 w-4 animate-spin opacity-50" /> : <MapPin className="h-4 w-4 text-slate-400" />}
 
                         />
                     </div>
 
                     <CommandList className="max-h-[300px] p-2">
                         <CommandEmpty className="py-6 text-center text-sm text-slate-500">
-                            {loading ? "Searching..." : "No results found."}
+                            {isLoading ? "Searching..." : "No results found."}
                         </CommandEmpty>
 
                         <CommandGroup heading="Sugestões">
-                            {cities?.map((item, index) => (
-                                <CommandItem
-                                    key={`${item.properties.osm_id}-${index}`}
+                            {locations.length > 0 ? locations?.map((location, index) => {
+                                if (!location) {
+                                    return null;
+                                }
+                                return <CommandItem
+                                    key={`${location.id}-${index}`}
                                     onSelect={() => {
-                                        console.log('item', item)
+                                        console.log({ selectedLocation: location })
 
-                                        onSelect(item.properties)
+                                        // onSelect(location)
                                         onClose()
                                     }}
                                     className="flex items-center gap-3 p-3 cursor-pointer rounded-lg"
@@ -123,14 +113,14 @@ export function LocationModal({ onSelect, isOpen, onClose }: LocationModalProps)
                                     <MapPin className="h-4 w-4 text-slate-400" />
                                     <div className="flex flex-col">
                                         <span className="font-medium text-slate-900 dark:text-slate-100">
-                                            {item.properties.name}
+                                            {location.name}
                                         </span>
                                         <span className="text-xs text-slate-500">
-                                            {`${item.properties.name},${item.properties.county}, ${item.properties.state}, ${item.properties.country}`}
+                                            {`${location.name},${location.city}, ${location.state}, ${location.country}`}
                                         </span>
                                     </div>
                                 </CommandItem>
-                            ))}
+                            }) : null}
                             <CommandItem
                                 onSelect={handleGeolocation}
                                 className="flex items-center gap-3 p-3 cursor-pointer rounded-lg"

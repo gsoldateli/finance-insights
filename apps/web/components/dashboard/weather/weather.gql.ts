@@ -16,3 +16,19 @@ export const GET_WEATHER_QUERY = graphql(`
     }
   }
 `);
+
+export const SEARCH_LOCATIONS_QUERY = graphql(`
+  query SearchLocations($query: String!) {
+    searchLocations(query: $query) {
+      id
+      name
+      city
+      state
+      country
+      coordinates {
+        lat
+        lng
+      }
+    }
+  }
+`);
