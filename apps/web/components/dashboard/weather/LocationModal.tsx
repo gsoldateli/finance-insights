@@ -83,37 +83,45 @@ export function LocationModal({ onSelect, isOpen, onClose }: LocationModalProps)
                     </div>
 
                     <CommandList className="max-h-[300px] p-2">
-                        {emptyMessage ? <CommandEmpty className="py-6 text-center text-sm text-slate-500">{emptyMessage}</CommandEmpty> : null}
+                        {(() => {
+                            if (emptyMessage) {
+                                return <CommandEmpty className="py-6 text-center text-sm text-slate-500">{emptyMessage}</CommandEmpty>
+                            }
+                            console.log({ locations, len: locations.length });
+                            if (locations.length > 0) {
+                                return <CommandGroup heading="Suggestions">
+                                    {locations?.map((location, index) => {
+                                        if (!location) {
+                                            return null;
+                                        }
+                                        const displayLocation = [location.name, location.city, location.state, location.country].filter(Boolean).join(', ');
+                                        return <CommandItem
+                                            id={`${location.id}-${index}`}
+                                            key={`${location.id}-${index}`}
+                                            onSelect={() => {
+                                                onSelect(location)
+                                                onClose()
+                                            }}
+                                            className="flex items-center gap-3 p-3 cursor-pointer rounded-lg"
+                                        >
+                                            <MapPin className="h-4 w-4 text-slate-400" />
+                                            <div className="flex flex-col">
+                                                <span className="font-medium text-slate-900 dark:text-slate-100">
+                                                    {location.name}
+                                                </span>
+                                                <span className="text-xs text-slate-500">
+                                                    {displayLocation}
+                                                </span>
+                                            </div>
+                                        </CommandItem>
+                                    })}
 
+                                </CommandGroup>
+                            }
 
-                        <CommandGroup heading="Suggestions">
-                            {locations.length > 0 ? locations?.map((location, index) => {
-                                if (!location) {
-                                    return null;
-                                }
-                                const displayLocation = [location.name, location.city, location.state, location.country].filter(Boolean).join(', ');
-                                return <CommandItem
-                                    id={`${location.id}-${index}`}
-                                    key={`${location.id}-${index}`}
-                                    onSelect={() => {
-                                        onSelect(location)
-                                        onClose()
-                                    }}
-                                    className="flex items-center gap-3 p-3 cursor-pointer rounded-lg"
-                                >
-                                    <MapPin className="h-4 w-4 text-slate-400" />
-                                    <div className="flex flex-col">
-                                        <span className="font-medium text-slate-900 dark:text-slate-100">
-                                            {location.name}
-                                        </span>
-                                        <span className="text-xs text-slate-500">
-                                            {displayLocation}
-                                        </span>
-                                    </div>
-                                </CommandItem>
-                            }) : <CommandEmpty>No location found</CommandEmpty>}
+                            return null;
+                        })()}
 
-                        </CommandGroup>
                     </CommandList>
                 </Command>
 
