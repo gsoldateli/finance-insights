@@ -1,8 +1,8 @@
 import { graphql } from "@/src/gql";
 
 export const GET_WEATHER_QUERY = graphql(`
-  query GetWeather($ip: String) {
-    getWeather(ip: $ip) {
+  query GetWeather($query: String!) {
+    getWeather(query: $query) {
       temperature {
         celsius
         fahrenheit

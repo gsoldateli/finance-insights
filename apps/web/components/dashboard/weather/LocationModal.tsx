@@ -11,15 +11,16 @@ import {
 } from "@/components/ui/dialog"
 import useDebounce from "@/hooks/useDebounce"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
-import { cn } from "@/lib/utils"
+
 import { useQuery } from "@tanstack/react-query"
 import { api } from "@/lib/api-client"
 import { SEARCH_LOCATIONS_QUERY } from "./weather.gql"
+import { LocationResult } from "@/src/gql/graphql"
 
 interface LocationModalProps {
     isOpen: boolean
     onClose: () => void
-    onSelect: (city: string) => void
+    onSelect: (location: Omit<LocationResult, 'type'>) => void
 }
 
 export function LocationModal({ onSelect, isOpen, onClose }: LocationModalProps) {
@@ -28,7 +29,11 @@ export function LocationModal({ onSelect, isOpen, onClose }: LocationModalProps)
 
     const debouncedQuery = useDebounce(query, 400);
 
-
+    useEffect(() => {
+        if (!isOpen) {
+            setQuery("")
+        }
+    }, [isOpen])
 
     const { data, isLoading, error } = useQuery({
         queryKey: ['search-locations', debouncedQuery],
@@ -41,20 +46,7 @@ export function LocationModal({ onSelect, isOpen, onClose }: LocationModalProps)
     })
     const locations = data?.searchLocations ?? [];
 
-
-    const handleGeolocation = () => {
-        setIsLocating(true)
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const { latitude, longitude } = position.coords
-
-                setIsLocating(false)
-            },
-            () => setIsLocating(false),
-            { timeout: 10000 }
-        )
-    }
-
+    const emptyMessage = getEmptyMessage(isLoading, query, locations.length);
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-[480px] p-0 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-xl shadow-2xl overflow-hidden gap-0">
@@ -91,21 +83,20 @@ export function LocationModal({ onSelect, isOpen, onClose }: LocationModalProps)
                     </div>
 
                     <CommandList className="max-h-[300px] p-2">
-                        <CommandEmpty className="py-6 text-center text-sm text-slate-500">
-                            {isLoading ? "Searching..." : "No results found."}
-                        </CommandEmpty>
+                        {emptyMessage ? <CommandEmpty className="py-6 text-center text-sm text-slate-500">{emptyMessage}</CommandEmpty> : null}
 
-                        <CommandGroup heading="Sugestões">
+
+                        <CommandGroup heading="Suggestions">
                             {locations.length > 0 ? locations?.map((location, index) => {
                                 if (!location) {
                                     return null;
                                 }
+                                const displayLocation = [location.name, location.city, location.state, location.country].filter(Boolean).join(', ');
                                 return <CommandItem
+                                    id={`${location.id}-${index}`}
                                     key={`${location.id}-${index}`}
                                     onSelect={() => {
-                                        console.log({ selectedLocation: location })
-
-                                        // onSelect(location)
+                                        onSelect(location)
                                         onClose()
                                     }}
                                     className="flex items-center gap-3 p-3 cursor-pointer rounded-lg"
@@ -116,32 +107,23 @@ export function LocationModal({ onSelect, isOpen, onClose }: LocationModalProps)
                                             {location.name}
                                         </span>
                                         <span className="text-xs text-slate-500">
-                                            {`${location.name},${location.city}, ${location.state}, ${location.country}`}
+                                            {displayLocation}
                                         </span>
                                     </div>
                                 </CommandItem>
-                            }) : null}
-                            <CommandItem
-                                onSelect={handleGeolocation}
-                                className="flex items-center gap-3 p-3 cursor-pointer rounded-lg"
-                                disabled={isLocating}
-                            >
-                                <Navigation className={cn("h-4 w-4 text-primary", isLocating && "animate-pulse")} />
-                                <span className="font-medium text-primary">Usar minha localização atual</span>
-                            </CommandItem>
+                            }) : <CommandEmpty>No location found</CommandEmpty>}
+
                         </CommandGroup>
                     </CommandList>
                 </Command>
 
-
-                <div className="p-4 bg-slate-50/50 dark:bg-slate-800/20 border-t border-slate-100 dark:border-slate-800">
-                    <div className="rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 h-20 relative group">
-                        <div className="absolute inset-0 bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-                            <MapIcon className="text-slate-300 dark:text-slate-600 h-8 w-8" />
-                        </div>
-                    </div>
-                </div>
             </DialogContent>
         </Dialog >
     )
 }
+
+const getEmptyMessage = (isLoading: boolean, query: string, locationsQuantity: number) => {
+    if (isLoading) return "Searching...";
+    if (query.length >= 3 && locationsQuantity === 0) return "No results found.";
+    return null;
+};

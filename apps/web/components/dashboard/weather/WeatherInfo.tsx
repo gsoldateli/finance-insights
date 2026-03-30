@@ -1,12 +1,13 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { CloudSun, MapPin, CloudRain, Sun, Cloud, Snowflake } from "lucide-react"
+import { Card, CardContent, CardFooter } from "@/components/ui/card"
+import { CloudSun, CloudRain, Sun, Cloud, Snowflake } from "lucide-react"
 import { GET_WEATHER_QUERY } from "./weather.gql"
 import { api } from "@/lib/api-client"
 import { headers } from "next/headers"
-import { WeatherError } from "./WeatherError"
-import { TemperatureDisplay } from "./TemperatureDisplay"
-import { WeatherLocationAction } from "./WeatherLocationAction"
+import { WeatherError } from "./WeatherError.client"
+import { TemperatureDisplay } from "./TemperatureDisplay.client"
+import { WeatherLocationAction } from "./WeatherLocationAction.client"
+import { UserLocationCookie } from "@/app/shared/user/user-location"
+import { isDev } from "@/lib/runtime"
 
 const getWeatherIcon = (condition: string) => {
     const lowerCondition = condition.toLowerCase();
@@ -19,23 +20,24 @@ const getWeatherIcon = (condition: string) => {
 
 export const WeatherInfo = async () => {
 
-    //TODO: Record location
-    // [x] - Use weather API to get location based on user's IP or location
-    // [x] - Cache location for 30 minutes
-    // [] - When selecting location, update weather widget with new latitude/longitude.
-    // [] - Add powered by Open Weather
-    // [] - Create branch to populate cryptocurrencies.
+    let query = "";
+    const userLocationCookie = await UserLocationCookie.getServerContext();
 
-
-    const headersList = await headers();
-    const forwardedFor = headersList.get("x-forwarded-for");
-    const realIp = headersList.get("x-real-ip");
-    let ip = forwardedFor ? (forwardedFor.split(",")[0]?.trim() ?? "127.0.0.1") : realIp || "127.0.0.1";
-    ip = process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_DEBUG_IP ? process.env.NEXT_PUBLIC_DEBUG_IP : ip;
+    if (userLocationCookie?.lat && userLocationCookie?.lng) {
+        query = `${userLocationCookie.lat},${userLocationCookie.lng}`;
+    }
+    else {
+        const headersList = await headers();
+        const forwardedFor = headersList.get("x-forwarded-for");
+        const realIp = headersList.get("x-real-ip");
+        const queryIp = forwardedFor ? (forwardedFor.split(",")[0]?.trim() ?? "127.0.0.1") : realIp || "127.0.0.1";
+        query = isDev && process.env.NEXT_PUBLIC_DEBUG_IP ? process.env.NEXT_PUBLIC_DEBUG_IP : queryIp;
+    }
 
     let weather;
+
     try {
-        const data = await api.request(GET_WEATHER_QUERY, { ip });
+        const data = await api.request(GET_WEATHER_QUERY, { query });
         weather = data?.getWeather;
     } catch (error) {
         console.error("[WeatherInfo Error]: Failed to fetch weather", error);
@@ -46,6 +48,8 @@ export const WeatherInfo = async () => {
     }
 
     const { temperature, condition, location } = weather;
+    const displayLocation = userLocationCookie?.location || `${location.city}, ${location.state}, ${location.country}`;
+    const displayTemperatureUnit = userLocationCookie?.temperatureUnit || 'fahrenheit';
 
     return (
         <Card>
@@ -55,7 +59,7 @@ export const WeatherInfo = async () => {
                         {getWeatherIcon(condition)}
                     </div>
                     <div className="text-right flex flex-col items-end">
-                        <WeatherLocationAction city={location.city} state={location.state} />
+                        <WeatherLocationAction location={displayLocation} />
                     </div>
                 </div>
                 <p className="text-xs font-bold uppercase text-slate-400 tracking-wider">Weather</p>
@@ -63,8 +67,13 @@ export const WeatherInfo = async () => {
                     fahrenheit={temperature.fahrenheit}
                     celsius={temperature.celsius}
                     condition={condition}
+                    initialTemperatureUnit={displayTemperatureUnit}
                 />
+
             </CardContent>
+            <CardFooter className="flex justify-end px-2 py-2 text-xs">
+                Data powered by&nbsp;<a href="https://www.weatherapi.com/" target="_blank" rel="noopener noreferrer" className="font-medium text-slate-500">WeatherAPI</a>
+            </CardFooter>
         </Card>
     );
 }

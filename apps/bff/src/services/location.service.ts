@@ -9,7 +9,7 @@ const LocationResponseSchema = z.object({
             type: z.string(),
             name: z.string(),
             city: z.string().optional(),
-            state: z.string(),
+            state: z.string().optional(),
             country: z.string(),
         }),
         geometry: z.object({
@@ -28,14 +28,13 @@ export class LocationService {
             const res = await fetch(`${this.baseUrl}/?q=${encodeURIComponent(query ?? '')}`);
             if (res.ok) {
                 const results = await res.json();
-                console.log(JSON.stringify(results, null, 2))
                 const parsed = LocationResponseSchema.parse(results);
 
                 return parsed; // LocationResponseSchema.parse);
             }
         } catch (error) {
             console.error('[LocationService Error]: searchLocations failed', error);
-            return null;
+            throw error;
         }
 
     }

@@ -43,8 +43,9 @@ export type LocationResult = {
   city: Maybe<Scalars['String']['output']>;
   coordinates: GeoCoordinates;
   country: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
-  state: Scalars['String']['output'];
+  state: Maybe<Scalars['String']['output']>;
   type: Scalars['String']['output'];
 };
 
@@ -79,8 +80,7 @@ export type QueryGetNewsArgs = {
 
 
 export type QueryGetWeatherArgs = {
-  city: InputMaybe<Scalars['String']['input']>;
-  ip: InputMaybe<Scalars['String']['input']>;
+  query: Scalars['String']['input'];
 };
 
 
@@ -234,8 +234,9 @@ export type LocationResultResolvers<ContextType = any, ParentType extends Resolv
   city: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   coordinates: Resolver<ResolversTypes['GeoCoordinates'], ParentType, ContextType>;
   country: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  state: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  state: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   type: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 };
 
@@ -252,7 +253,7 @@ export type NewsResolvers<ContextType = any, ParentType extends ResolversParentT
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   getCryptos: Resolver<Array<Maybe<ResolversTypes['Crypto']>>, ParentType, ContextType, QueryGetCryptosArgs>;
   getNews: Resolver<Array<Maybe<ResolversTypes['News']>>, ParentType, ContextType, QueryGetNewsArgs>;
-  getWeather: Resolver<Maybe<ResolversTypes['Weather']>, ParentType, ContextType, QueryGetWeatherArgs>;
+  getWeather: Resolver<Maybe<ResolversTypes['Weather']>, ParentType, ContextType, RequireFields<QueryGetWeatherArgs, 'query'>>;
   searchLocations: Resolver<Array<Maybe<ResolversTypes['LocationResult']>>, ParentType, ContextType, RequireFields<QuerySearchLocationsArgs, 'query'>>;
 };
 

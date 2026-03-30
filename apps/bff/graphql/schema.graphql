@@ -46,7 +46,7 @@ type LocationResult {
   name: String!
   type: String!
   city: String
-  state: String!
+  state: String
   country: String!
   coordinates: GeoCoordinates!
 }
@@ -59,7 +59,7 @@ type Query {
   getCryptos(limit: Int): [Crypto]!
 
   # Returns the weather of a specific city
-  getWeather(ip: String, city: String): Weather
+  getWeather(query: String!): Weather
 
   searchLocations(query: String!): [LocationResult]!
 }

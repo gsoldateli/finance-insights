@@ -14,7 +14,7 @@ export const WeatherError = () => {
             router.refresh()
         })
     }
-    console.log({ isPending })
+
     return (
         <CardContent className="p-6">
             <p className="text-red-500 mb-2">Error loading weather.</p>

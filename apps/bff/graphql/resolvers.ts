@@ -20,14 +20,11 @@ export const resolvers: Partial<Resolvers> = {
 
             return withCache('latest-news', () => NewsService.getLatestNews());
         },
-        getWeather: async (_, { ip, city }) => {
-            console.log({ ip, city })
-            if (!ip && !city) {
-                throw new Error('IP or city is required');
-            }
+        getWeather: async (_, { query }) => {
             const weatherService = new WeatherService();
-            const cacheKey = `weather-${city || ip}`;
-            const weatherInfo = await withCache(cacheKey, () => weatherService.getCurrentWeather(`${ip || city}`), 1800); // cache for 30 minutes
+
+            const cacheKey = `weather-${query}`;
+            const weatherInfo = await withCache(cacheKey, () => weatherService.getCurrentWeather(`${query}`), 1800); // cache for 30 minutes
 
             if (!weatherInfo) {
                 throw new Error('Weather not found');
@@ -61,7 +58,7 @@ export const resolvers: Partial<Resolvers> = {
                     id: properties.osm_id.toString(),
                     name: properties.name,
                     type: properties.type,
-                    state: properties.state,
+                    state: properties.state ?? null,
                     city: properties.city ?? null,
                     country: properties.country,
                     coordinates: {
