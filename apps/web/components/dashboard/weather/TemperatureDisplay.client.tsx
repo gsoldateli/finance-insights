@@ -1,9 +1,9 @@
 "use client";
 
-import { updateTemperatureUnitAction } from "@/app/shared/user/user-actions";
-import { useCallback, useState, useTransition } from "react";
+import { UserLocationCookie } from "@/app/shared/user/user-location";
+import { startTransition, useCallback, useState, useTransition } from "react";
 
-interface TemperatureDisplayProps {
+type TemperatureDisplayProps = {
     fahrenheit: number;
     celsius: number;
     condition: string;
@@ -12,11 +12,11 @@ interface TemperatureDisplayProps {
 
 export const TemperatureDisplay = ({ fahrenheit, celsius, condition, initialTemperatureUnit }: TemperatureDisplayProps) => {
     const [isCelsius, setIsCelsius] = useState(initialTemperatureUnit === 'celsius');
-    const [isPending, startTransition] = useTransition()
-    const updateTemperatureUnit = useCallback((unit: 'celsius' | 'fahrenheit') => {
+
+    const updateTemperatureUnit = useCallback((unit: TemperatureDisplayProps['initialTemperatureUnit']) => {
         setIsCelsius(unit === 'celsius');
         startTransition(async () => {
-            await updateTemperatureUnitAction(unit);
+            await UserLocationCookie.updateContext({ temperatureUnit: unit });
         })
     }, []);
 

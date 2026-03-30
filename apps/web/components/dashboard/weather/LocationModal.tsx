@@ -87,7 +87,7 @@ export function LocationModal({ onSelect, isOpen, onClose }: LocationModalProps)
                             if (emptyMessage) {
                                 return <CommandEmpty className="py-6 text-center text-sm text-slate-500">{emptyMessage}</CommandEmpty>
                             }
-                            console.log({ locations, len: locations.length });
+
                             if (locations.length > 0) {
                                 return <CommandGroup heading="Suggestions">
                                     {locations?.map((location, index) => {
