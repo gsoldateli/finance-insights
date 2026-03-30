@@ -10,10 +10,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 
-import NewsFeed from '@/components/dashboard/news/NewsFeed';
-import NewsLoadingSkeleton from '@/components/dashboard/news/NewsLoadingSkeleton';
-import { WeatherInfo } from '@/components/dashboard/weather/WeatherInfo';
-import { WeatherInfoSkeleton } from '@/components/dashboard/weather/WeatherInfoSkeleton';
+import NewsFeed from '@/app/features/dashboard/news/NewsFeed';
+import NewsLoadingSkeleton from '@/app/features/dashboard/news/NewsLoadingSkeleton';
+import { WeatherInfo } from '@/app/features/dashboard/weather/WeatherInfo';
+import { WeatherInfoSkeleton } from '@/app/features/dashboard/weather/WeatherInfoSkeleton';
 
 
 
