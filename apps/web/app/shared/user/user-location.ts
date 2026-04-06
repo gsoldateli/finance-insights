@@ -25,7 +25,7 @@ export const UserLocationCookie = {
      * Lógica para o Servidor (Server Components / Actions)
      */
     async getServerContext(): Promise<UserLocation | null> {
-        if (typeof window !== 'undefined') {
+        if (!isServer) {
             throw new Error("getServerContext must be used on the server");
         }
         const { cookies: nextCookies } = await import('next/headers');

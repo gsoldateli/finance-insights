@@ -25,7 +25,6 @@ interface LocationModalProps {
 
 export function LocationModal({ onSelect, isOpen, onClose }: LocationModalProps) {
     const [query, setQuery] = useState<string>("")
-    const [isLocating, setIsLocating] = useState(false)
 
     const debouncedQuery = useDebounce(query, 400);
 
