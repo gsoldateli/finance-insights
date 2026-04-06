@@ -5,6 +5,7 @@ import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import QueryProvider from "@/providers/query-provider";
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -30,10 +31,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn("font-sans", geist.variable)}>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-
-        <Header />
-        {children}
-        <Footer />
+        <QueryProvider>
+          <Header />
+          {children}
+          <Footer />
+        </QueryProvider>
 
       </body>
     </html>

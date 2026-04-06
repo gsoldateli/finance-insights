@@ -19,11 +19,36 @@ type Crypto {
   change24h: Float
 }
 
-# Weather Object
-type Weather {
-  temp: Int!
-  condition: String!
+type Location {
   city: String!
+  state: String!
+  country: String!
+}
+
+type Temperature {
+  celsius: Int!
+  fahrenheit: Int!
+}
+
+type Weather {
+  temperature: Temperature!
+  condition: String!
+  location: Location!
+}
+
+type GeoCoordinates {
+  lat: Float!
+  lng: Float!
+}
+
+type LocationResult {
+  id: ID!
+  name: String!
+  type: String!
+  city: String
+  state: String
+  country: String!
+  coordinates: GeoCoordinates!
 }
 
 type Query {
@@ -34,5 +59,7 @@ type Query {
   getCryptos(limit: Int): [Crypto]!
 
   # Returns the weather of a specific city
-  getWeather(city: String!): Weather
+  getWeather(query: String!): Weather
+
+  searchLocations(query: String!): [LocationResult]!
 }

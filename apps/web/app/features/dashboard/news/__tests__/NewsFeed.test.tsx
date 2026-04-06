@@ -8,7 +8,6 @@ import { graphql, HttpResponse } from 'msw'
 import { GetNewsDocument } from '@/src/gql/graphql'
 
 describe('NewsFeed integration', () => {
-    // console.log('true');
 
     test('should render no news message when there are no news', async () => {
         server.use(
