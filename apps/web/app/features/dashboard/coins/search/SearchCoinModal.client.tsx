@@ -42,16 +42,35 @@ export const SearchCoinModal = () => {
 
     const coins = data?.searchCoins ?? [];
 
-    // const emptyMessage = getEmptyMessage(isLoading, query, locations.length);
 
     return (
         <Dialog
             open={isOpen}
-            onOpenChange={(open) => { setIsOpen(open) }}
+            onOpenChange={(open) => {
+                setIsOpen(open)
+                if (!open) {
+                    setSearchQuery('')
+                }
+            }}
 
         >
             <DialogTrigger asChild>
-                <Button>Abrir</Button>
+                {/* <Button>Abrir</Button> */}
+                <button
+
+                    className="cursor-pointer group relative flex h-10 w-full items-center gap-2 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background transition-all hover:bg-slate-50 hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-slate-800/50"
+                >
+                    <Search className="h-4 w-4 shrink-0 text-slate-400 group-hover:text-slate-500 transition-colors" />
+
+                    <span className="flex-1 text-left text-slate-500 font-normal">
+                        Search for a coin...
+                    </span>
+
+                    {/* Atalho visual de teclado (Opcional, dá um ar bem Pro) */}
+                    <kbd className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100 sm:flex">
+                        <span className="text-xs">⌘</span>K
+                    </kbd>
+                </button>
             </DialogTrigger>
             <DialogContent className="p-0 gap-0 max-w-3xl overflow-hidden border-none bg-white dark:bg-slate-900 shadow-2xl" showCloseButton={false}>
                 <DialogTitle className="sr-only">Search Currencies</DialogTitle>
