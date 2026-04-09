@@ -8,6 +8,7 @@ import { TemperatureDisplay } from "./TemperatureDisplay.client"
 import { WeatherLocationAction } from "./WeatherLocationAction.client"
 import { UserLocationCookie } from "@/app/shared/user/user-location"
 import { isDev } from "@/lib/runtime"
+import { ModuleError } from "@/components/ModuleError.client"
 
 const getWeatherIcon = (condition: string) => {
     const lowerCondition = condition.toLowerCase();
@@ -41,10 +42,11 @@ export const WeatherInfo = async () => {
         weather = data?.getWeather;
     } catch (error) {
         console.error("[WeatherInfo Error]: Failed to fetch weather", error);
+
     }
 
     if (!weather) {
-        return <WeatherError />;
+        return <ModuleError moduleName="Weather" />
     }
 
     const { temperature, condition, location } = weather;
@@ -53,7 +55,7 @@ export const WeatherInfo = async () => {
 
     return (
         <Card>
-            <CardContent className="p-6">
+            <CardContent className="px-6 py-2">
                 <div className="flex justify-between items-start mb-4">
                     <div className="p-3 bg-blue-50 rounded-lg text-blue-500">
                         {getWeatherIcon(condition)}

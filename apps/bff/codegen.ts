@@ -6,9 +6,12 @@ const config: CodegenConfig = {
         './graphql/generated/resolvers-types.ts': {
             plugins: ['typescript', 'typescript-resolvers'],
             config: {
-                avoidOptionals: true,
+                avoidOptionals: {
+                    resolvers: false,
+                },
                 maybeValue: 'T | null',
             },
+
         },
     },
 };

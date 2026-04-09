@@ -14,6 +14,8 @@ import NewsFeed from '@/app/features/dashboard/news/NewsFeed';
 import NewsLoadingSkeleton from '@/app/features/dashboard/news/NewsLoadingSkeleton';
 import { WeatherInfo } from '@/app/features/dashboard/weather/WeatherInfo';
 import { WeatherInfoSkeleton } from '@/app/features/dashboard/weather/WeatherInfoSkeleton';
+import { TrendingCoinsList } from '../features/dashboard/trending-coins/TrendingCoinsList';
+import { TrendingCoinsListSkeleton } from '../features/dashboard/trending-coins/TrendingCoinsListSkeleton';
 
 
 
@@ -44,7 +46,7 @@ const FinanceDashboard = async () => {
                             </div>
                             {/* <Button variant="link" className="text-[#144bb8]">View all news</Button> */}
                         </div>
-                        <Suspense fallback={<NewsLoadingSkeleton />}>
+                        <Suspense fallback={<NewsLoadingSkeleton />} >
                             <NewsFeed />
                         </Suspense>
                     </div>
@@ -67,30 +69,10 @@ const FinanceDashboard = async () => {
                                 <Input placeholder="Search for a coin..." className="pl-10" />
                             </div>
 
-                            <div className="space-y-3">
-                                {trendingCoins.map((coin) => (
-                                    <Card key={coin.symbol} className="hover:border-[#144bb8]/40 transition-colors cursor-pointer group">
-                                        <CardContent className="p-4 flex items-center justify-between">
-                                            <div className="flex items-center gap-3">
-                                                <div className={`h-10 w-10 rounded-full ${coin.bg} flex items-center justify-center ${coin.color}`}>
-                                                    <Badge variant="outline" className="border-none font-bold text-[10px]">{coin.symbol}</Badge>
-                                                </div>
-                                                <div>
-                                                    <p className="text-sm font-bold">{coin.name}</p>
-                                                    <p className="text-[10px] text-slate-400 uppercase">{coin.symbol}</p>
-                                                </div>
-                                            </div>
-                                            <div className="text-right flex items-center">
-                                                <div className="mr-2">
-                                                    <p className="text-sm font-bold">{coin.price}</p>
-                                                    <p className={`text-[10px] font-bold ${coin.change.includes('+') ? 'text-green-500' : 'text-red-500'}`}>{coin.change}</p>
-                                                </div>
-                                                <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-[#144bb8]" />
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                ))}
-                            </div>
+                            <Suspense fallback={<TrendingCoinsListSkeleton />}>
+                                <TrendingCoinsList />
+                            </Suspense>
+
                         </div>
 
                         {/* Newsletter CTA */}

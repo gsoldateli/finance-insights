@@ -15,11 +15,13 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 type Documents = {
     "\n  query GetNews {\n    getNews {\n      id\n      title\n      summary\n      url\n      publishedAt\n      source\n      imageUrl\n    }\n  }\n": typeof types.GetNewsDocument,
+    "\n  query GetTrendingCoins {\n  getTrendingCoins {\n    id\n    symbol\n    name\n    iconUrl\n    currentPrice {\n      amount\n      currency\n    }\n    performance {\n      changePercent\n    }\n  }\n}\n": typeof types.GetTrendingCoinsDocument,
     "\n  query GetWeather($query: String!) {\n    getWeather(query: $query) {\n      temperature {\n        celsius\n        fahrenheit\n      }\n      condition\n      location {\n        city\n        state\n        country\n      }\n    }\n  }\n": typeof types.GetWeatherDocument,
     "\n  query SearchLocations($query: String!) {\n    searchLocations(query: $query) {\n      id\n      name\n      city\n      state\n      country\n      coordinates {\n        lat\n        lng\n      }\n    }\n  }\n": typeof types.SearchLocationsDocument,
 };
 const documents: Documents = {
     "\n  query GetNews {\n    getNews {\n      id\n      title\n      summary\n      url\n      publishedAt\n      source\n      imageUrl\n    }\n  }\n": types.GetNewsDocument,
+    "\n  query GetTrendingCoins {\n  getTrendingCoins {\n    id\n    symbol\n    name\n    iconUrl\n    currentPrice {\n      amount\n      currency\n    }\n    performance {\n      changePercent\n    }\n  }\n}\n": types.GetTrendingCoinsDocument,
     "\n  query GetWeather($query: String!) {\n    getWeather(query: $query) {\n      temperature {\n        celsius\n        fahrenheit\n      }\n      condition\n      location {\n        city\n        state\n        country\n      }\n    }\n  }\n": types.GetWeatherDocument,
     "\n  query SearchLocations($query: String!) {\n    searchLocations(query: $query) {\n      id\n      name\n      city\n      state\n      country\n      coordinates {\n        lat\n        lng\n      }\n    }\n  }\n": types.SearchLocationsDocument,
 };
@@ -42,6 +44,10 @@ export function graphql(source: string): unknown;
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  query GetNews {\n    getNews {\n      id\n      title\n      summary\n      url\n      publishedAt\n      source\n      imageUrl\n    }\n  }\n"): (typeof documents)["\n  query GetNews {\n    getNews {\n      id\n      title\n      summary\n      url\n      publishedAt\n      source\n      imageUrl\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query GetTrendingCoins {\n  getTrendingCoins {\n    id\n    symbol\n    name\n    iconUrl\n    currentPrice {\n      amount\n      currency\n    }\n    performance {\n      changePercent\n    }\n  }\n}\n"): (typeof documents)["\n  query GetTrendingCoins {\n  getTrendingCoins {\n    id\n    symbol\n    name\n    iconUrl\n    currentPrice {\n      amount\n      currency\n    }\n    performance {\n      changePercent\n    }\n  }\n}\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
