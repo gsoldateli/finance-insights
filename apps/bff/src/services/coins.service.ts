@@ -48,6 +48,7 @@ export const CoinSearchItemSchema = z.object({
     name: z.string(),
     symbol: z.string(),
     thumb: z.string().url(),
+    large: z.string().url(),
 
 })
 export const ListAllCoinsResponseSchema = z.object({

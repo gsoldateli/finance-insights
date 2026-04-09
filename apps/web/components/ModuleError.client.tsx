@@ -9,16 +9,21 @@ import { AlertCircle, RefreshCw } from "lucide-react"
 interface ModuleErrorProps {
     message?: string
     moduleName: string
+    customRetry?: () => void
 }
 
 export const ModuleError = ({
     message = "Error loading data",
-    moduleName
+    moduleName,
+    customRetry
 }: ModuleErrorProps) => {
     const router = useRouter()
     const [isPending, startTransition] = useTransition()
 
     const handleRetry = () => {
+        if (customRetry) {
+            return customRetry()
+        }
         startTransition(() => {
             router.refresh()
         })

@@ -83,6 +83,7 @@ export const resolvers: Partial<Resolvers> = {
             }
         },
         searchCoins: async (_, { query }) => {
+
             const coinsService = new CoinGeckoService()
             const coins = await withRedisCache(`search-coins-${query.toLowerCase()}`, () => coinsService.searchCoins(query), 60 * 60 * 24)
             return coins.coins.map((item) => {
@@ -90,7 +91,7 @@ export const resolvers: Partial<Resolvers> = {
                     id: item.symbol,
                     name: item.name,
                     symbol: item.symbol,
-                    iconUrl: item.thumb,
+                    iconUrl: item.large,
                 }
             })
         },

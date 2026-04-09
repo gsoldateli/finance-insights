@@ -12,41 +12,37 @@ import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from '@/components/ui/button'
+import useDebounce from '@/hooks/useDebounce'
+import { useQuery } from '@tanstack/react-query'
+import { SEARCH_COINS_QUERY } from './search-coins.gql'
+import { api } from '@/lib/api-client'
+import { ModuleError } from '@/components/ModuleError.client'
 
-interface Coin {
-    name: string
-    symbol: string
-    icon: string
-    color: string
-}
 
 export const SearchCoinModal = () => {
 
     const [isOpen, setIsOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState('')
-    const [isLoading, setIsLoading] = useState(false)
 
-    // Simulação de dados (ou viria via props/fetch)
-    const currencies: Coin[] = [
-        { name: 'Bitcoin', symbol: 'BTC', icon: 'currency_bitcoin', color: 'orange' },
-        { name: 'Ethereum', symbol: 'ETH', icon: 'eth', color: 'blue' },
-    ]
 
-    // Lógica de Loading Fake para simular busca em API
-    useEffect(() => {
-        if (searchQuery.length > 0) {
-            setIsLoading(true)
-            const timer = setTimeout(() => setIsLoading(false), 300)
-            return () => clearTimeout(timer)
+
+
+    const debouncedQuery = useDebounce(searchQuery, 400);
+
+
+    const { data, isLoading, error, refetch } = useQuery({
+        queryKey: ['search-coins', debouncedQuery],
+        queryFn: async () => {
+            if (debouncedQuery.length < 3) {
+                return null
+            }
+            return await api.request(SEARCH_COINS_QUERY, { query: debouncedQuery })
         }
-    }, [searchQuery])
+    })
 
-    const filteredCurrencies = useMemo(() => {
-        return currencies.filter(coin =>
-            coin.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            coin.symbol.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-    }, [searchQuery])
+    const coins = data?.searchCoins ?? [];
+
+    // const emptyMessage = getEmptyMessage(isLoading, query, locations.length);
 
     return (
         <Dialog
@@ -82,37 +78,63 @@ export const SearchCoinModal = () => {
 
                 {/* Results Area */}
                 <ScrollArea className="flex-1 max-h-[50vh] p-4">
-                    {isLoading ? (
-                        <SearchLoadingSkeleton />
-                    ) : filteredCurrencies.length > 0 ? (
-                        <div className="flex flex-col gap-1">
-                            <p className="px-4 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                                Currencies
-                            </p>
-                            {filteredCurrencies.map((coin) => (
-                                <button
-                                    key={coin.symbol}
-                                    className="w-full flex items-center justify-between p-4 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-all group"
-                                >
-                                    <div className="flex items-center gap-4">
-                                        <div className={`size-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center`}>
-                                            <span className="text-xl">💰</span> {/* Ou componente de Icon real */}
-                                        </div>
-                                        <div className="text-left">
-                                            <p className="font-bold text-slate-900 dark:text-white">{coin.name}</p>
-                                            <p className="text-xs text-slate-500 uppercase font-medium">{coin.symbol}</p>
-                                        </div>
-                                    </div>
-                                    <ChevronRight className="h-5 w-5 text-slate-300 group-hover:text-primary transition-colors" />
-                                </button>
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="py-20 flex flex-col items-center justify-center text-slate-400 gap-4">
+                    {(() => {
+                        if (searchQuery.length < 3) {
+                            return <div className="py-20 flex flex-col items-center justify-center text-slate-400 gap-4">
+                                <SearchCode className="h-16 w-16 opacity-20" />
+                                <p className="text-sm font-medium">Type at least 3 characters to search for currencies</p>
+                            </div>
+                        }
+
+                        if (error) {
+                            return <ModuleError moduleName='Search coins' message={'Error loading coins data'} customRetry={refetch} />
+                        }
+
+                        if (isLoading) {
+                            return <SearchLoadingSkeleton />
+                        }
+
+                        if (coins.length > 0) {
+                            return (
+                                <div className="flex flex-col gap-1">
+                                    <p className="px-4 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                                        Currencies
+                                    </p>
+                                    {coins.map((coin) => {
+                                        if (!coin) return null;
+
+                                        return (
+                                            <button
+                                                key={`${coin.id}-${coin.name}`}
+                                                className="w-full flex items-center justify-between p-4 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-all group"
+                                            >
+                                                <div className="flex items-center gap-4">
+                                                    {coin?.iconUrl ? <div className={`size-12 rounded-full bg-slate-100 dark:bg-slate-800 flex rounded-full overflow-hidden items-center justify-center`}>
+                                                        <img src={coin.iconUrl} alt={coin.name} className="size-12" />
+                                                    </div> : <div className={`size-12 rounded-full bg-slate-100 dark:bg-slate-800 flex rounded-full overflow-hidden items-center justify-center`}>
+                                                        <span className="text-xl">{coin.name.charAt(0)}</span>
+                                                    </div>}
+                                                    <div className="text-left">
+                                                        <p className="font-bold text-slate-900 dark:text-white">{coin.name}</p>
+                                                        <p className="text-xs text-slate-500 uppercase font-medium">{coin.symbol}</p>
+                                                    </div>
+                                                </div>
+                                                <ChevronRight className="h-5 w-5 text-slate-300 group-hover:text-primary transition-colors" />
+                                            </button>
+                                        )
+                                    })}
+                                </div>
+                            )
+                        }
+
+                        return <div className="py-20 flex flex-col items-center justify-center text-slate-400 gap-4">
                             <SearchCode className="h-16 w-16 opacity-20" />
                             <p className="text-sm font-medium">No results found for "{searchQuery}"</p>
                         </div>
-                    )}
+
+
+                    })()}
+
                 </ScrollArea>
 
                 {/* Footer */}
