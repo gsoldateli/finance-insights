@@ -14,8 +14,9 @@ import NewsFeed from '@/app/features/dashboard/news/NewsFeed';
 import NewsLoadingSkeleton from '@/app/features/dashboard/news/NewsLoadingSkeleton';
 import { WeatherInfo } from '@/app/features/dashboard/weather/WeatherInfo';
 import { WeatherInfoSkeleton } from '@/app/features/dashboard/weather/WeatherInfoSkeleton';
-import { TrendingCoinsList } from '../features/dashboard/trending-coins/TrendingCoinsList';
-import { TrendingCoinsListSkeleton } from '../features/dashboard/trending-coins/TrendingCoinsListSkeleton';
+import { TrendingCoinsList } from '../features/dashboard/coins/trending/TrendingCoinsList';
+import { TrendingCoinsListSkeleton } from '../features/dashboard/coins/trending/TrendingCoinsListSkeleton';
+import { SearchCoinModal } from '../features/dashboard/coins/search/SearchCoinModal.client';
 
 
 
@@ -61,13 +62,14 @@ const FinanceDashboard = async () => {
                         <div className="space-y-4">
                             <div className="flex items-center gap-2">
                                 <TrendingUp className="h-5 w-5 text-[#144bb8]" />
-                                <h2 className="text-xl font-bold">Trending</h2>
+                                <h2 className="text-xl font-bold">Trending Coins</h2>
                             </div>
 
-                            <div className="relative">
+                            {/* <div className="relative">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                                 <Input placeholder="Search for a coin..." className="pl-10" />
-                            </div>
+                            </div> */}
+                            <SearchCoinModal />
 
                             <Suspense fallback={<TrendingCoinsListSkeleton />}>
                                 <TrendingCoinsList />

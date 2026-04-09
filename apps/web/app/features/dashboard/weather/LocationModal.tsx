@@ -53,10 +53,10 @@ export function LocationModal({ onSelect, isOpen, onClose }: LocationModalProps)
                 <div className="p-6 pb-2">
                     <button
                         onClick={onClose}
-                        className="flex items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-primary transition-colors text-sm font-medium mb-4"
+                        className="flex items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-primary transition-colors text-sm font-medium mb-4 cursor-pointer"
                     >
                         <ArrowLeft className="h-4 w-4" />
-                        Voltar
+                        Go back
                     </button>
                     <DialogHeader className="text-left">
                         <DialogTitle className="text-slate-900 dark:text-slate-100 text-2xl font-bold">

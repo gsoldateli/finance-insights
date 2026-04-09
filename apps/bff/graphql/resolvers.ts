@@ -5,6 +5,7 @@ import { NewsService } from "../src/services/news.service";
 import { WeatherService } from "../src/services/weather.service";
 import { CoinDetails, HistoryPoint, Resolvers } from "./generated/resolvers-types";
 import { DateTimeResolver } from 'graphql-scalars';
+import { withRedisCache } from "../lib/redis";
 
 
 
@@ -80,6 +81,18 @@ export const resolvers: Partial<Resolvers> = {
                 },
                 history: [],
             }
+        },
+        searchCoins: async (_, { query }) => {
+            const coinsService = new CoinGeckoService()
+            const coins = await withRedisCache(`search-coins-${query.toLowerCase()}`, () => coinsService.searchCoins(query), 60 * 60 * 24)
+            return coins.coins.map((item) => {
+                return {
+                    id: item.symbol,
+                    name: item.name,
+                    symbol: item.symbol,
+                    iconUrl: item.thumb,
+                }
+            })
         },
         getCryptos: async (_, { limit = 5 }) => {
 

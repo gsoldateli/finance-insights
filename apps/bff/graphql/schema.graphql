@@ -92,6 +92,13 @@ type CoinDetails {
   history(period: HistoryPeriod!): [HistoryPoint!]!
 }
 
+type CoinSearchItem {
+  id: ID!
+  name: String!
+  symbol: String!
+  iconUrl: String
+}
+
 enum HistoryPeriod {
   ONE_DAY
   SEVEN_DAYS
@@ -102,7 +109,7 @@ enum HistoryPeriod {
 
 type Query {
   coin(symbol: String!): CoinDetails
-
+  searchCoins(query: String!): [CoinSearchItem]!
   getTrendingCoins: [CoinDetails]!
   # Returns a list of news, allowing to filter by category
   getNews(category: String): [News]!

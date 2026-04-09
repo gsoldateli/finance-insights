@@ -43,6 +43,17 @@ export const TrendingCoinsResponse = z.object({
     coins: z.array(CoinSchema)
 });
 
+export const CoinSearchItemSchema = z.object({
+    id: z.string(),
+    name: z.string(),
+    symbol: z.string(),
+    thumb: z.string().url(),
+
+})
+export const ListAllCoinsResponseSchema = z.object({
+    coins: z.array(CoinSearchItemSchema)
+})
+
 export class CoinGeckoService {
     private API_KEY: string;
     private baseUrl = 'https://api.coingecko.com/api/v3';
@@ -73,6 +84,12 @@ export class CoinGeckoService {
         const coins = await this.fetch(url);
 
         return TrendingCoinsResponse.parse(coins)
+    }
+
+    async searchCoins(query: string) {
+        const url = `search?query=${query}`;
+        const data = await this.fetch(url);
+        return ListAllCoinsResponseSchema.parse(data)
     }
 
 }

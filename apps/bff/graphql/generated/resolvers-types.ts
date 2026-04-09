@@ -47,6 +47,14 @@ export type CoinPerformanceMetrics = {
   isPositive: Scalars['Boolean']['output'];
 };
 
+export type CoinSearchItem = {
+  __typename?: 'CoinSearchItem';
+  iconUrl?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  symbol: Scalars['String']['output'];
+};
+
 export type Crypto = {
   __typename?: 'Crypto';
   change24h?: Maybe<Scalars['Float']['output']>;
@@ -119,6 +127,7 @@ export type Query = {
   getNews: Array<Maybe<News>>;
   getTrendingCoins: Array<Maybe<CoinDetails>>;
   getWeather?: Maybe<Weather>;
+  searchCoins: Array<Maybe<CoinSearchItem>>;
   searchLocations: Array<Maybe<LocationResult>>;
 };
 
@@ -139,6 +148,11 @@ export type QueryGetNewsArgs = {
 
 
 export type QueryGetWeatherArgs = {
+  query: Scalars['String']['input'];
+};
+
+
+export type QuerySearchCoinsArgs = {
   query: Scalars['String']['input'];
 };
 
@@ -236,6 +250,7 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   CoinDetails: ResolverTypeWrapper<CoinDetails>;
   CoinPerformanceMetrics: ResolverTypeWrapper<CoinPerformanceMetrics>;
+  CoinSearchItem: ResolverTypeWrapper<CoinSearchItem>;
   Crypto: ResolverTypeWrapper<Crypto>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
@@ -259,6 +274,7 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
   CoinDetails: CoinDetails;
   CoinPerformanceMetrics: CoinPerformanceMetrics;
+  CoinSearchItem: CoinSearchItem;
   Crypto: Crypto;
   DateTime: Scalars['DateTime']['output'];
   Float: Scalars['Float']['output'];
@@ -297,6 +313,13 @@ export type CoinPerformanceMetricsResolvers<ContextType = any, ParentType extend
   fiftyTwoWeekHigh?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   fiftyTwoWeekLow?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   isPositive?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+};
+
+export type CoinSearchItemResolvers<ContextType = any, ParentType extends ResolversParentTypes['CoinSearchItem'] = ResolversParentTypes['CoinSearchItem']> = {
+  iconUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  symbol?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 };
 
 export type CryptoResolvers<ContextType = any, ParentType extends ResolversParentTypes['Crypto'] = ResolversParentTypes['Crypto']> = {
@@ -359,6 +382,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   getNews?: Resolver<Array<Maybe<ResolversTypes['News']>>, ParentType, ContextType, Partial<QueryGetNewsArgs>>;
   getTrendingCoins?: Resolver<Array<Maybe<ResolversTypes['CoinDetails']>>, ParentType, ContextType>;
   getWeather?: Resolver<Maybe<ResolversTypes['Weather']>, ParentType, ContextType, RequireFields<QueryGetWeatherArgs, 'query'>>;
+  searchCoins?: Resolver<Array<Maybe<ResolversTypes['CoinSearchItem']>>, ParentType, ContextType, RequireFields<QuerySearchCoinsArgs, 'query'>>;
   searchLocations?: Resolver<Array<Maybe<ResolversTypes['LocationResult']>>, ParentType, ContextType, RequireFields<QuerySearchLocationsArgs, 'query'>>;
 };
 
@@ -376,6 +400,7 @@ export type WeatherResolvers<ContextType = any, ParentType extends ResolversPare
 export type Resolvers<ContextType = any> = {
   CoinDetails?: CoinDetailsResolvers<ContextType>;
   CoinPerformanceMetrics?: CoinPerformanceMetricsResolvers<ContextType>;
+  CoinSearchItem?: CoinSearchItemResolvers<ContextType>;
   Crypto?: CryptoResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
   GeoCoordinates?: GeoCoordinatesResolvers<ContextType>;
