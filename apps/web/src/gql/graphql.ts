@@ -19,6 +19,44 @@ export type Scalars = {
   DateTime: { input: string; output: string; }
 };
 
+export type CoinDetails = {
+  __typename?: 'CoinDetails';
+  currentPrice: Money;
+  description?: Maybe<Scalars['String']['output']>;
+  history: Array<HistoryPoint>;
+  iconUrl?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  marketCap?: Maybe<Money>;
+  name: Scalars['String']['output'];
+  performance: CoinPerformanceMetrics;
+  symbol: Scalars['String']['output'];
+  volume24h?: Maybe<Money>;
+};
+
+
+export type CoinDetailsHistoryArgs = {
+  period: HistoryPeriod;
+};
+
+export type CoinPerformanceMetrics = {
+  __typename?: 'CoinPerformanceMetrics';
+  allTimeHigh?: Maybe<Scalars['Float']['output']>;
+  athDate?: Maybe<Scalars['String']['output']>;
+  changeAbs: Scalars['Float']['output'];
+  changePercent: Scalars['Float']['output'];
+  fiftyTwoWeekHigh?: Maybe<Scalars['Float']['output']>;
+  fiftyTwoWeekLow?: Maybe<Scalars['Float']['output']>;
+  isPositive: Scalars['Boolean']['output'];
+};
+
+export type CoinSearchItem = {
+  __typename?: 'CoinSearchItem';
+  iconUrl?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  symbol: Scalars['String']['output'];
+};
+
 export type Crypto = {
   __typename?: 'Crypto';
   change24h?: Maybe<Scalars['Float']['output']>;
@@ -31,6 +69,21 @@ export type GeoCoordinates = {
   __typename?: 'GeoCoordinates';
   lat: Scalars['Float']['output'];
   lng: Scalars['Float']['output'];
+};
+
+export enum HistoryPeriod {
+  All = 'ALL',
+  OneDay = 'ONE_DAY',
+  OneMonth = 'ONE_MONTH',
+  OneYear = 'ONE_YEAR',
+  SevenDays = 'SEVEN_DAYS'
+}
+
+export type HistoryPoint = {
+  __typename?: 'HistoryPoint';
+  price: Scalars['Float']['output'];
+  timestamp: Scalars['Float']['output'];
+  volume?: Maybe<Scalars['Float']['output']>;
 };
 
 export type Location = {
@@ -51,6 +104,13 @@ export type LocationResult = {
   type: Scalars['String']['output'];
 };
 
+export type Money = {
+  __typename?: 'Money';
+  amount: Scalars['Float']['output'];
+  currency: Scalars['String']['output'];
+  formatted: Scalars['String']['output'];
+};
+
 export type News = {
   __typename?: 'News';
   id: Scalars['ID']['output'];
@@ -64,10 +124,18 @@ export type News = {
 
 export type Query = {
   __typename?: 'Query';
+  coin?: Maybe<CoinDetails>;
   getCryptos: Array<Maybe<Crypto>>;
   getNews: Array<Maybe<News>>;
+  getTrendingCoins: Array<Maybe<CoinDetails>>;
   getWeather?: Maybe<Weather>;
+  searchCoins: Array<Maybe<CoinSearchItem>>;
   searchLocations: Array<Maybe<LocationResult>>;
+};
+
+
+export type QueryCoinArgs = {
+  symbol: Scalars['String']['input'];
 };
 
 
@@ -82,6 +150,11 @@ export type QueryGetNewsArgs = {
 
 
 export type QueryGetWeatherArgs = {
+  query: Scalars['String']['input'];
+};
+
+
+export type QuerySearchCoinsArgs = {
   query: Scalars['String']['input'];
 };
 
@@ -103,6 +176,18 @@ export type Weather = {
   temperature: Temperature;
 };
 
+export type SearchCoinsQueryVariables = Exact<{
+  query: Scalars['String']['input'];
+}>;
+
+
+export type SearchCoinsQuery = { __typename?: 'Query', searchCoins: Array<{ __typename?: 'CoinSearchItem', id: string, name: string, symbol: string, iconUrl?: string | null } | null> };
+
+export type GetTrendingCoinsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetTrendingCoinsQuery = { __typename?: 'Query', getTrendingCoins: Array<{ __typename?: 'CoinDetails', id: string, symbol: string, name: string, iconUrl?: string | null, currentPrice: { __typename?: 'Money', amount: number, currency: string }, performance: { __typename?: 'CoinPerformanceMetrics', changePercent: number } } | null> };
+
 export type GetNewsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -123,9 +208,54 @@ export type SearchLocationsQueryVariables = Exact<{
 export type SearchLocationsQuery = { __typename?: 'Query', searchLocations: Array<{ __typename?: 'LocationResult', id: string, name: string, city?: string | null, state?: string | null, country: string, coordinates: { __typename?: 'GeoCoordinates', lat: number, lng: number } } | null> };
 
 
+export const SearchCoinsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"SearchCoins"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"query"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"searchCoins"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"query"},"value":{"kind":"Variable","name":{"kind":"Name","value":"query"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}},{"kind":"Field","name":{"kind":"Name","value":"iconUrl"}}]}}]}}]} as unknown as DocumentNode<SearchCoinsQuery, SearchCoinsQueryVariables>;
+export const GetTrendingCoinsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetTrendingCoins"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getTrendingCoins"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"iconUrl"}},{"kind":"Field","name":{"kind":"Name","value":"currentPrice"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"currency"}}]}},{"kind":"Field","name":{"kind":"Name","value":"performance"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"changePercent"}}]}}]}}]}}]} as unknown as DocumentNode<GetTrendingCoinsQuery, GetTrendingCoinsQueryVariables>;
 export const GetNewsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetNews"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getNews"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"publishedAt"}},{"kind":"Field","name":{"kind":"Name","value":"source"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}}]}}]}}]} as unknown as DocumentNode<GetNewsQuery, GetNewsQueryVariables>;
 export const GetWeatherDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetWeather"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"query"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getWeather"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"query"},"value":{"kind":"Variable","name":{"kind":"Name","value":"query"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"temperature"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"celsius"}},{"kind":"Field","name":{"kind":"Name","value":"fahrenheit"}}]}},{"kind":"Field","name":{"kind":"Name","value":"condition"}},{"kind":"Field","name":{"kind":"Name","value":"location"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"city"}},{"kind":"Field","name":{"kind":"Name","value":"state"}},{"kind":"Field","name":{"kind":"Name","value":"country"}}]}}]}}]}}]} as unknown as DocumentNode<GetWeatherQuery, GetWeatherQueryVariables>;
 export const SearchLocationsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"SearchLocations"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"query"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"searchLocations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"query"},"value":{"kind":"Variable","name":{"kind":"Name","value":"query"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"city"}},{"kind":"Field","name":{"kind":"Name","value":"state"}},{"kind":"Field","name":{"kind":"Name","value":"country"}},{"kind":"Field","name":{"kind":"Name","value":"coordinates"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"lat"}},{"kind":"Field","name":{"kind":"Name","value":"lng"}}]}}]}}]}}]} as unknown as DocumentNode<SearchLocationsQuery, SearchLocationsQueryVariables>;
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockSearchCoinsQuery(
+ *   ({ query, variables }) => {
+ *     const { query } = variables;
+ *     return HttpResponse.json({
+ *       data: { searchCoins }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockSearchCoinsQuery = (resolver: GraphQLResponseResolver<SearchCoinsQuery, SearchCoinsQueryVariables>, options?: RequestHandlerOptions) =>
+  graphql.query<SearchCoinsQuery, SearchCoinsQueryVariables>(
+    'SearchCoins',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockGetTrendingCoinsQuery(
+ *   ({ query, variables }) => {
+ *     return HttpResponse.json({
+ *       data: { getTrendingCoins }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockGetTrendingCoinsQuery = (resolver: GraphQLResponseResolver<GetTrendingCoinsQuery, GetTrendingCoinsQueryVariables>, options?: RequestHandlerOptions) =>
+  graphql.query<GetTrendingCoinsQuery, GetTrendingCoinsQueryVariables>(
+    'GetTrendingCoins',
+    resolver,
+    options
+  )
 
 /**
  * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))

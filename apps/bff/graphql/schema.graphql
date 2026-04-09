@@ -51,7 +51,66 @@ type LocationResult {
   coordinates: GeoCoordinates!
 }
 
+type Money {
+  amount: Float!
+  currency: String!
+  formatted: String!
+}
+
+type CoinPerformanceMetrics {
+  changeAbs: Float!          # Variação absoluta (ex: +$150.00)
+  changePercent: Float!      # Variação percentual (ex: +2.5%)
+  isPositive: Boolean!
+  fiftyTwoWeekHigh: Float
+  fiftyTwoWeekLow: Float
+  allTimeHigh: Float
+  athDate: String
+}
+
+type HistoryPoint {
+  timestamp: Float!          # Unix timestamp para o Recharts
+  price: Float!
+  volume: Float
+}
+
+type CoinDetails {
+  id: ID!                    # ex: "BTC-USD"
+  symbol: String!            # ex: "BTC"
+  name: String!              # ex: "Bitcoin"
+  description: String
+  iconUrl: String
+  
+  # Dados em Tempo Real
+  currentPrice: Money!
+  marketCap: Money
+  volume24h: Money
+  
+  # Métricas de Performance Calculadas pelo BFF
+  performance: CoinPerformanceMetrics!
+  
+  # Dados Históricos (com argumentos para filtro)
+  history(period: HistoryPeriod!): [HistoryPoint!]!
+}
+
+type CoinSearchItem {
+  id: ID!
+  name: String!
+  symbol: String!
+  iconUrl: String
+}
+
+enum HistoryPeriod {
+  ONE_DAY
+  SEVEN_DAYS
+  ONE_MONTH
+  ONE_YEAR
+  ALL
+}
+
 type Query {
+  coin(symbol: String!): CoinDetails
+  searchCoins(query: String!): [CoinSearchItem]!
+  getTrendingCoins: [CoinDetails]!
   # Returns a list of news, allowing to filter by category
   getNews(category: String): [News]!
 
